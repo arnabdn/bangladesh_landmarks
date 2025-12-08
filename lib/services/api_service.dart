@@ -26,4 +26,29 @@ class ApiService {
       rethrow; 
     }
   }
+
+  Future<bool> createLandmark(
+  String title, double lat, double lon, String imagePath) async {
+  try {
+    final formData = FormData.fromMap({
+      'title': title,
+      'lat': lat.toString(),
+      'lon': lon.toString(),
+      'image': await MultipartFile.fromFile(
+        imagePath,
+        filename: imagePath.split('/').last,
+      ),
+    });
+
+    final response = await _dio.post(
+      '/api.php',
+      data: formData,
+    );
+
+    return response.statusCode == 200;
+  } catch (e) {
+    print("UPLOAD ERROR: $e");
+    return false;
+  }
+}
 }
