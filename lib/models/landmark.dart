@@ -18,11 +18,11 @@ class Landmark {
   // Convert from JSON
   factory Landmark.fromJson(Map<String, dynamic> json) {
     return Landmark(
-      id: json['id'],            
-      title: json['title'],
-      lat: json['lat'],         
-      lon: json['lon'],        
-      image: json['image'],  
+      id: int.tryParse(json['id'].toString()) ?? 0,
+      title: json['title']?.toString() ?? "Untitled",
+      lat: double.tryParse(json['lat']?.toString() ?? "0.0") ?? 0.0,
+      lon: double.tryParse(json['lon']?.toString() ?? "0.0") ?? 0.0,
+      image: json['image']?.toString() ?? "",
     );
   }
 
@@ -35,6 +35,6 @@ class Landmark {
         "image": image,
       };
 
-  // Helper: full image URL (for Image.network)
+  // image helper
   String get imageUrl => baseUrl + image;
 }
