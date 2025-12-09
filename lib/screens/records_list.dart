@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
 import '../models/landmark.dart';
+import 'edit_entry.dart';
 
 class RecordsListScreen extends StatefulWidget {
   const RecordsListScreen({super.key});
@@ -24,7 +25,6 @@ class _RecordsListScreenState extends State<RecordsListScreen> {
       appBar: AppBar(
         title: const Text("Landmarks"),
       ),
-
       body: FutureBuilder<List<Landmark>>(
         future: futureLandmarks,
         builder: (context, snapshot) {
@@ -66,17 +66,36 @@ class _RecordsListScreenState extends State<RecordsListScreen> {
 
                 confirmDismiss: (direction) async {
                   if (direction == DismissDirection.startToEnd) {
-                    // Swipe → delete
-                    return await _confirmDelete(context, lm);
+                    // confirm it has been deleted
+                    final shouldDelete = await _confirmDelete(context, lm);
+                    if (shouldDelete) {
+                      final success =
+                          await ApiService().deleteLandmark(lm.id);
+
+                      if (success) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Deleted successfully")),
+                        );
+
+                        setState(() {
+                          futureLandmarks = ApiService().fetchLandmarks();
+                        });
+                        return true;
+                      } else {
+                        _showErrorDialog(context, "Failed to delete entry.");
+                        return false;
+                      }
+                    }
+                    return false;
                   } else {
-                    // Swipe → edit
                     _goToEditScreen(lm);
                     return false;
                   }
                 },
 
                 child: Card(
-                  margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   elevation: 3,
                   child: ListTile(
                     contentPadding: const EdgeInsets.all(12),
@@ -101,13 +120,12 @@ class _RecordsListScreenState extends State<RecordsListScreen> {
     );
   }
 
-  // Confirm delete popup
   Future<bool> _confirmDelete(BuildContext context, Landmark lm) async {
     return await showDialog(
           context: context,
           builder: (_) => AlertDialog(
             title: const Text("Delete Landmark"),
-            content: Text("Are you sure you want to Delete '${lm.title}'?"),
+            content: Text("Are you sure you want to delete '${lm.title}'?"),
             actions: [
               TextButton(
                 child: const Text("Cancel"),
@@ -123,9 +141,35 @@ class _RecordsListScreenState extends State<RecordsListScreen> {
         false;
   }
 
-  // Placeholder for edit screen
+  void _showErrorDialog(BuildContext context, String msg) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text("Error"),
+        content: Text(msg),
+        actions: [
+          TextButton(
+            child: const Text("OK"),
+            onPressed: () => Navigator.pop(context),
+          )
+        ],
+      ),
+    );
+  }
+
   void _goToEditScreen(Landmark lm) {
-    print("Edit: ${lm.title}");
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => EditEntryScreen(landmark: lm),
+      ),
+    ).then((updated) {
+      if (updated == true) {
+        setState(() {
+          futureLandmarks = ApiService().fetchLandmarks();
+        });
+      }
+    });
   }
 }
 
