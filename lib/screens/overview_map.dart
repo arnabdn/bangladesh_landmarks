@@ -15,6 +15,7 @@ class OverviewMapScreen extends StatefulWidget {
 class _OverviewMapScreenState extends State<OverviewMapScreen> {
   late Future<List<Landmark>> futureLandmarks;
 
+  bool isNightMode = false;
   @override
   void initState() {
     super.initState();
@@ -24,7 +25,21 @@ class _OverviewMapScreenState extends State<OverviewMapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Overview Map")),
+      appBar: AppBar(
+        title: const Text("Overview Map"),
+        actions: [
+          IconButton(
+            icon: Icon(
+              isNightMode ? Icons.dark_mode : Icons.light_mode,
+            ),
+            onPressed: () {
+              setState(() {
+                isNightMode = !isNightMode;
+              });
+            },
+          )
+        ],
+      ),
 
       body: FutureBuilder<List<Landmark>>(
         future: futureLandmarks,
@@ -46,7 +61,9 @@ class _OverviewMapScreenState extends State<OverviewMapScreen> {
             ),
             children: [
               TileLayer(
-                urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                urlTemplate: isNightMode
+                    ? "https://cartodb-basemaps-a.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png"
+                    : "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                 userAgentPackageName: "com.example.bangladesh_landmarks",
               ),
 
@@ -127,7 +144,7 @@ class _OverviewMapScreenState extends State<OverviewMapScreen> {
     );
   }
 
- void _goToEditScreen(Landmark lm) {
+  void _goToEditScreen(Landmark lm) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -141,7 +158,8 @@ class _OverviewMapScreenState extends State<OverviewMapScreen> {
       }
     });
   }
- void _confirmDelete(BuildContext context, Landmark lm) async {
+
+  void _confirmDelete(BuildContext context, Landmark lm) async {
     final yes = await showDialog(
       context: context,
       builder: (_) => AlertDialog(
