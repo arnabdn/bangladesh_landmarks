@@ -26,58 +26,39 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
+
       theme: ThemeData(
         useMaterial3: true,
 
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF006EAF),
-          primary: const Color(0xFF006EAF),
-          secondary: const Color(0xFFFFA726),
-          tertiary: const Color(0xFF26A69A),
+          seedColor: const Color(0xFF0066CC),
+          brightness: Brightness.light,
         ),
 
         appBarTheme: const AppBarTheme(
-          elevation: 2,
-          shadowColor: Colors.black26,
-          backgroundColor: Color(0xFF006EAF),
+          backgroundColor: Color(0xFF0066CC),
           foregroundColor: Colors.white,
+          elevation: 2,
           centerTitle: true,
-          titleTextStyle: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-            color: Colors.white,
-          ),
-        ),
-
-        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          backgroundColor: Colors.white,
-          selectedItemColor: Color(0xFF006EAF),
-          unselectedItemColor: Colors.grey,
-          selectedIconTheme: IconThemeData(size: 28),
-          unselectedIconTheme: IconThemeData(size: 24),
-          type: BottomNavigationBarType.fixed,
-          elevation: 12,
         ),
 
         cardTheme: const CardThemeData(
           color: Colors.white,
-          elevation: 4,
+          elevation: 3,
           shadowColor: Colors.black26,
           margin: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(16)),
-          ),
         ),
 
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF006EAF),
-            foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(12)),
-            ),
-            elevation: 4,
+        listTileTheme: const ListTileThemeData(
+          titleTextStyle: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+          ),
+          subtitleTextStyle: TextStyle(
+            fontSize: 13,
+            color: Colors.black87,
           ),
         ),
 
@@ -85,29 +66,19 @@ class _MyAppState extends State<MyApp> {
           filled: true,
           fillColor: Colors.grey.shade100,
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
-            borderSide: BorderSide.none,
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
-            borderSide: const BorderSide(color: Color(0xFF006EAF), width: 2),
-          ),
-          labelStyle: TextStyle(color: Colors.grey.shade700),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        ),
-
-        listTileTheme: const ListTileThemeData(
-          iconColor: Color(0xFF006EAF),
-          titleTextStyle: TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.w600,
+            borderRadius: BorderRadius.circular(12),
           ),
         ),
 
-        snackBarTheme: const SnackBarThemeData(
-          backgroundColor: Color(0xFF006EAF),
-          contentTextStyle: TextStyle(color: Colors.white),
-          behavior: SnackBarBehavior.floating,
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF0066CC),
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          ),
         ),
       ),
 
@@ -116,6 +87,7 @@ class _MyAppState extends State<MyApp> {
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: index,
           onTap: (value) => setState(() => index = value),
+          selectedItemColor: const Color(0xFF0066CC),
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.map), label: "Overview"),
             BottomNavigationBarItem(icon: Icon(Icons.list), label: "Records"),
