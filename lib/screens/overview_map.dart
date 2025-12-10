@@ -4,6 +4,7 @@ import 'package:latlong2/latlong.dart';
 import '../services/api_service.dart';
 import '../models/landmark.dart';
 import 'edit_entry.dart';
+import '../utils/divisions.dart';
 
 class OverviewMapScreen extends StatefulWidget {
   const OverviewMapScreen({super.key});
@@ -22,6 +23,18 @@ class _OverviewMapScreenState extends State<OverviewMapScreen> {
     futureLandmarks = ApiService().fetchLandmarks();
   }
 
+  String _getMarkerAssetFor(Landmark lm) {
+    final point = LatLng(lm.lat, lm.lon);
+
+    for (final div in bdDivisions) {
+      if (div.contains(point)) {
+        return div.markerAsset;
+      }
+    }
+
+    return "assets/markers/default.png";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,15 +42,13 @@ class _OverviewMapScreenState extends State<OverviewMapScreen> {
         title: const Text("Overview Map"),
         actions: [
           IconButton(
-            icon: Icon(
-              isNightMode ? Icons.dark_mode : Icons.light_mode,
-            ),
+            icon: Icon(isNightMode ? Icons.dark_mode : Icons.light_mode),
             onPressed: () {
               setState(() {
                 isNightMode = !isNightMode;
               });
             },
-          )
+          ),
         ],
       ),
 
@@ -69,17 +80,14 @@ class _OverviewMapScreenState extends State<OverviewMapScreen> {
 
               MarkerLayer(
                 markers: landmarks.map((lm) {
+                  final icon = _getMarkerAssetFor(lm);
                   return Marker(
-                    width: 40,
-                    height: 40,
+                    width: 135,
+                    height:135,
                     point: LatLng(lm.lat, lm.lon),
                     child: GestureDetector(
                       onTap: () => _openBottomSheet(context, lm),
-                      child: Image.asset(
-                        'assets/athens.png',
-                        width: 40,
-                        height: 40,
-                      ),
+                      child: Image.asset(icon, width: 45, height: 45),
                     ),
                   );
                 }).toList(),
@@ -97,25 +105,18 @@ class _OverviewMapScreenState extends State<OverviewMapScreen> {
       showDragHandle: true,
       builder: (_) => Padding(
         padding: const EdgeInsets.all(16.0),
-
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              lm.title,
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-
+            Text(lm.title,
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
-
             Image.network(lm.imageUrl, height: 120, fit: BoxFit.cover),
-
             const SizedBox(height: 20),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-
                 ElevatedButton.icon(
                   onPressed: () {
                     Navigator.pop(context);
@@ -124,7 +125,6 @@ class _OverviewMapScreenState extends State<OverviewMapScreen> {
                   icon: const Icon(Icons.edit),
                   label: const Text("Edit"),
                 ),
-
                 ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
                   onPressed: () {
@@ -132,11 +132,11 @@ class _OverviewMapScreenState extends State<OverviewMapScreen> {
                     _confirmDelete(context, lm);
                   },
                   icon: const Icon(Icons.delete, color: Colors.white),
-                  label: const Text("Delete", style: TextStyle(color: Colors.white)),
+                  label: const Text("Delete",
+                      style: TextStyle(color: Colors.white)),
                 ),
               ],
             ),
-
             const SizedBox(height: 10),
           ],
         ),
@@ -147,9 +147,7 @@ class _OverviewMapScreenState extends State<OverviewMapScreen> {
   void _goToEditScreen(Landmark lm) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => EditEntryScreen(landmark: lm),
-      ),
+      MaterialPageRoute(builder: (_) => EditEntryScreen(landmark: lm)),
     ).then((updated) {
       if (updated == true) {
         setState(() {
