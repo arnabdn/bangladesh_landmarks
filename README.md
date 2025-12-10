@@ -156,3 +156,10 @@ flutter run
 * No offline caching — requires active internet connection
 
 ---
+
+Academic Integrity Statement
+
+I, Arnab Debnath, confirm that all code and project structure were created by me.
+I used ChatGPT to assist with debugging and implementation guidance, and Gemini AI to help generate custom marker designs, GIMP to further modify it, Neovim as text editor and GIT plue GITHUB for version control.
+All AI-generated suggestions were manually reviewed, modified, and integrated by me.
+I take full responsibility for the final content and implementation of this project.
